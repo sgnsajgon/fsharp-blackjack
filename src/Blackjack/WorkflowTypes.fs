@@ -10,7 +10,7 @@ type SideBet =
 
 type Bet =
     | Main of BetAmount
-    | SideBet of BetAmount
+    | SideBet of SideBet
 
 type HandBet = { HandId: HandId; Bets: Bet list  }
 
@@ -21,6 +21,7 @@ type Action =
     | Hit
     | Stand
     | Double
+    | Split
     | Surrender
     | Insurance
     | InsuranceAll
@@ -36,6 +37,8 @@ type GameEvent =
     | EvenMoneyAllOffered
     | HandHit
     | HandStood
+    | HandDoubled
+    | HandSplit
     | HandBusted
     | HandWon
     | HandPushed

@@ -5,8 +5,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Include="Library.fs" />
-        <Compile Include="Types.fs" />
+        <Compile Include="WorkflowTypes.fs" />
+        <Compile Include="HandTypes.fs" />
+        <Compile Include="Hand.fs" />
     </ItemGroup>
 
 </Project>
