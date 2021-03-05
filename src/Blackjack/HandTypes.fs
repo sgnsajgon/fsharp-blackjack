@@ -1,102 +1,89 @@
 ﻿module Blackjack.HandTypes
 
-// Card definition types
+open Blackjack.CardTypes
 
-type CardValue = { soft: byte; hard: byte }
+// Hand definition types
 
-type CardKind =
-    | Ace of CardValue
-    | Two of CardValue
-    | Three of CardValue
-    | Four of CardValue
-    | Five of CardValue
-    | Six of CardValue
-    | Seven of CardValue
-    | Eight of CardValue
-    | Nine of CardValue
-    | Ten of CardValue
-    | Jack of CardValue
-    | Queen of CardValue
-    | King of CardValue
-    
-type CardSuit =
-    | Diamond
-    | Heart
-    | Club
-    | Spade
+type HandId = HandId of string
 
-type Card = CardKind * CardSuit
+type Hand = { Id: HandId; Cards: Card list }
 
 // All possible hand states
 
-type EmptyHand = unit
-type DealtHand = unit
-type SplitableHand = unit
-type AcesSplittableHand = unit
-type BlackjackHand = unit
-type InPlayHand = unit
-type StoodHand = unit
-type BustedHand = unit
-type HalfHand = unit
+type EmptyHand = EmptyHand of Hand
+type InitialHand = InitialHand of Hand
+type SplitableHand = SplitableHand of Hand
+type AcesSplittableHand = AcesSplittableHand of Hand
+type BlackjackHand = Blackjack of Hand
+type OneCardHand = OneCardHand of Hand
+type InPlayHand = InPlayHand of Hand
+type StoodHand = StoodHand of Hand
+type BustedHand = BustedHand of Hand
 
 // Deal action possible transitions
 
-type DealResult =
-    | DealtHand of DealtHand
-    | SplitableHand of SplitableHand
-    | AcesSplittableHand of AcesSplittableHand
-    | BlackjackHand of BlackjackHand
+type DealtHand =
+    | Initial of InitialHand
+    | Splitable of SplitableHand
+    | AcesSplittable of AcesSplittableHand
+    | Blackjack of BlackjackHand
 
-type deal = EmptyHand -> Card -> DealResult
+type DealHand = EmptyHand -> Card -> Card -> DealtHand
 
 // Hit action possible transitions
 
 type HittableHand =
-    | DealtHand of DealtHand
-    | SplitableHand of SplitableHand
-    | AcesSplittableHand of AcesSplittableHand
-    | InPlayHand of InPlayHand
-    
-type HitResult =
-    | InPlayHand of InPlayHand
-    | StoodHand of StoodHand
-    | BustedHand of BustedHand
+    | Dealt of InitialHand
+    | Splitable of SplitableHand
+    | AcesSplittable of AcesSplittableHand
+    | InPlay of InPlayHand
 
-type hit = HittableHand -> Card -> HitResult
+type HitHand =
+    | InPlay of InPlayHand
+    | Stood of StoodHand
+    | Busted of BustedHand
+
+type Hit = HittableHand -> Card -> HitHand
 
 // Double action possible transitions
 
 type DoubleableHand =
-    | DealtHand of DealtHand
-    | SplitableHand of SplitableHand
-    | AcesSplittableHand of AcesSplittableHand
+    | Dealt of InitialHand
+    | Splitable of SplitableHand
+    | AcesSplittable of AcesSplittableHand
 
-type DoubleResult =
+type DoubledHand =
     | StoodHand
     | BustedHand
-    
-type double = DoubleableHand -> Card -> DoubleResult
+
+type Double = DoubleableHand -> Card -> DoubledHand
 
 // Split action possible transitions
 
-type SplitFirstResult =
-    | InPlayHand of InPlayHand
-    | StoodHand of StoodHand
+type SplitFirstHand =
+    | InPlay of InPlayHand
+    | Stood of StoodHand
 
-type SplitSecondResult =
-    | HalfHand of HalfHand
-    | InPlayHand of InPlayHand
-    | StoodHand of StoodHand
+type SplitSecondHand =
+    | OneCard of OneCardHand
+    | InPlay of InPlayHand
+    | Stood of StoodHand
 
-type SplitResult = {
-        FirstHand: SplitFirstResult
-        SecondHand : SplitSecondResult
-    }
+type SplitHand =
+    { First: SplitFirstHand
+      Second: SplitSecondHand }
 
-type AcesSplitResult = {
-    FirstHand: StoodHand
-    SecondHand: StoodHand
-}
+type AcesSplitHand = { First: StoodHand; Second: StoodHand }
 
-type split = SplitableHand -> Card -> SplitResult
-type acesSplit = AcesSplittableHand -> Card -> Card -> AcesSplitResult
+type Split = SplitableHand -> Card -> SplitHand
+type AcesSplit = AcesSplittableHand -> Card -> Card -> AcesSplitHand
+
+// Stand action possible transitions
+
+type StandableHand =
+    | Initial of InitialHand
+    | Splitable of SplitableHand
+    | AcesSplittable of AcesSplittableHand
+    | InPlay of InPlayHand
+
+type Stand = StandableHand -> StoodHand
